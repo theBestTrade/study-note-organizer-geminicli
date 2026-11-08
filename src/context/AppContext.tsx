@@ -74,7 +74,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (savedSettings) {
-      dispatch({ type: 'SET_SETTINGS', payload: JSON.parse(savedSettings) });
+      try {
+        const raw = JSON.parse(savedSettings);
+        // Whitelist known settings; legacy apiKey must not persist.
+        dispatch({ type: 'SET_SETTINGS', payload: {
+          baseModel1: raw.baseModel1 || DEFAULT_SETTINGS.baseModel1,
+          baseModel2: raw.baseModel2 || DEFAULT_SETTINGS.baseModel2,
+          mergeModel: raw.mergeModel || DEFAULT_SETTINGS.mergeModel,
+          theme: raw.theme === 'dark' ? 'dark' : 'light',
+        } });
+      } catch { /* ignore corrupt saved settings */ }
     }
 
     const savedHistory = localStorage.getItem(STORAGE_KEYS.HISTORY);

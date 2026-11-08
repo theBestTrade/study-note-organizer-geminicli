@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Secrets (server only)
+.env
+.env.*
+!.env.example

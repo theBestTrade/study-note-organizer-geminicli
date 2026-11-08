@@ -13,18 +13,12 @@ import type { HistoryItem } from './types';
 
 const App: React.FC = () => {
   const { state, dispatch } = useAppContext();
-  const { callModel } = useOpenRouter(state.settings.apiKey);
+  const { callModel } = useOpenRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const getModelName = (id: string) => MODEL_OPTIONS.find(m => m.id === id)?.name || id;
 
   const handleOrganize = useCallback(async () => {
-    if (!state.settings.apiKey) {
-      alert('설정에서 API Key를 입력해주세요.');
-      dispatch({ type: 'TOGGLE_SETTINGS' });
-      return;
-    }
-
     if (!state.inputText.trim()) return;
 
     setIsLoading(true);
@@ -59,7 +53,7 @@ const App: React.FC = () => {
         } 
       });
 
-      const mergePrompt = buildMergePrompt(res1.content, res2.content);
+      const mergePrompt = buildMergePrompt(state.inputText, res1.content, res2.content);
       const mergeRes = await callModel(state.settings.mergeModel, getModelName(state.settings.mergeModel), mergePrompt);
 
       if (mergeRes.status === 'success') {
@@ -118,7 +112,7 @@ const App: React.FC = () => {
       payload: state.finalResult ? { ...state.finalResult, status: 'loading' } : null 
     });
     
-    const mergePrompt = buildMergePrompt(state.baseResult1.content, state.baseResult2.content);
+    const mergePrompt = buildMergePrompt(state.inputText, state.baseResult1.content, state.baseResult2.content);
     const mergeRes = await callModel(state.settings.mergeModel, getModelName(state.settings.mergeModel), mergePrompt);
     
     if (mergeRes.status === 'success') {

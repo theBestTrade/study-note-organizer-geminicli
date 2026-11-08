@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { X, Save, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { X, Save, AlertTriangle } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { MODEL_OPTIONS } from '../utils/constants';
 
 export const SettingsPanel: React.FC = () => {
   const { state, dispatch } = useAppContext();
-  const [apiKey, setApiKey] = useState(state.settings.apiKey);
-  const [showApiKey, setShowApiKey] = useState(false);
   const [baseModel1, setBaseModel1] = useState(state.settings.baseModel1);
   const [baseModel2, setBaseModel2] = useState(state.settings.baseModel2);
   const [mergeModel, setMergeModel] = useState(state.settings.mergeModel);
@@ -18,7 +16,6 @@ export const SettingsPanel: React.FC = () => {
       type: 'SET_SETTINGS',
       payload: {
         ...state.settings,
-        apiKey,
         baseModel1,
         baseModel2,
         mergeModel,
@@ -41,27 +38,7 @@ export const SettingsPanel: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* API Key */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">OpenRouter API Key</label>
-            <div className="relative">
-              <input
-                type={showApiKey ? 'text' : 'password'}
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none pr-10"
-                placeholder="sk-or-v1-..."
-              />
-              <button
-                type="button"
-                onClick={() => setShowApiKey(!showApiKey)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-              >
-                {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-            <p className="text-[10px] text-gray-400">OpenRouter에서 발급받은 API 키를 입력하세요.</p>
-          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400">OpenRouter API Key는 서버 환경변수 OPENROUTER_API_KEY로 관리합니다. 브라우저에 입력하거나 저장하지 않습니다.</p>
 
           {/* Model Selection */}
           <div className="space-y-4">
